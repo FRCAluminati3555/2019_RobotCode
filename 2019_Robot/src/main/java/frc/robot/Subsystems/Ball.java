@@ -17,7 +17,6 @@ public class Ball {
     private final Value  on = Value.kForward;
     private final Value off = Value.kForward;
 
-    
    private static Ball instance = new Ball();
 
    public static Ball getInstance() {
@@ -34,16 +33,22 @@ public class Ball {
         u1.setDistanceUnits(Unit.kInches);
     }
     public void ballControl(){
-        frontMotor.set(ControlMode.PercentOutput, joystick.getY());
-        backMotor.set(ControlMode.PercentOutput, joystick.getY());
         System.out.println("Ultrasonic Value: " + u1.pidGet());
         System.out.println("JoystickY: " + joystick.getY());
+
+        if (joystick.getRawButton(7)) {
+            r1.set(off);
+            frontMotor.set(ControlMode.PercentOutput, -.1);
+            backMotor.set(ControlMode.PercentOutput, -.1);
+        }
+
         if (u1.pidGet() <= 7){
             r1.set(on);
             frontMotor.set(ControlMode.PercentOutput, 0);
             backMotor.set(ControlMode.PercentOutput, 0);       
         }
-        r1.set(on); // 7
-
+        if (joystick.getRawButton(2)) {
+            r1.set(off);
+        }
     }
 }
