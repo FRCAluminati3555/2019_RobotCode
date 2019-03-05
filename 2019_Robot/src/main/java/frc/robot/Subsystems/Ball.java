@@ -38,6 +38,11 @@ public class Ball {
         backMotor.set(ControlMode.PercentOutput, joystick.getY());
         System.out.println("Ultrasonic Value: " + u1.pidGet());
         System.out.println("JoystickY: " + joystick.getY());
+        if (u1.pidGet() <= 7){
+            r1.set(on);
+            frontMotor.set(ControlMode.PercentOutput, 0);
+            backMotor.set(ControlMode.PercentOutput, 0);       
+        }
         r1.set(on); // 7
 
     }
