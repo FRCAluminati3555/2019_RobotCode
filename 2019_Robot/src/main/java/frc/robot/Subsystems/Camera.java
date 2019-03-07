@@ -14,20 +14,20 @@ public class Camera{
     }
     public void Camera1(){
 		new Thread(() -> {
-			UsbCamera camera = CameraServer.getInstance().startAutomaticCapture(0);
-			CvSink cvSink = CameraServer.getInstance().getVideo(camera);
-			CvSource outputStream = CameraServer.getInstance().putVideo("Camera 1", 160, 120);
-			
-			Mat source = new Mat();
-			Mat output = new Mat();
-			
-			while(!Thread.interrupted()) {
-				long rv = cvSink.grabFrame(source);
-			
-				if(rv != 0) {
-					output.setTo(Scalar.all(0));
-					Imgproc.Canny(source, output, 100, 300, 3, true);
-					outputStream.putFrame(output);
+			UsbCamera camera1 = CameraServer.getInstance().startAutomaticCapture(0);
+			CvSink cvSink1 = CameraServer.getInstance().getVideo(camera1);
+			CvSource outputStream1 = CameraServer.getInstance().putVideo("Grayscale1", 160, 120);
+
+			Mat source1 = new Mat();
+			Mat output1 = new Mat();
+
+			while(!Thread.interrupted()) {			
+				long rv1 = cvSink1.grabFrame(source1);
+
+				if(rv1 != 0){
+					output1.setTo(new Scalar(1));
+					Imgproc.cvtColor(source1, output1, Imgproc.COLOR_RGB2GRAY);
+					outputStream1.putFrame(output1); 								
 				}
 			}
 		}).start();
@@ -35,21 +35,20 @@ public class Camera{
 
     public void Camera2(){
 		new Thread(() -> {
-			UsbCamera camera1 = CameraServer.getInstance().startAutomaticCapture(1);
-			CvSink cvSink1 = CameraServer.getInstance().getVideo(camera1);
-			CvSource outputStream1 = CameraServer.getInstance().putVideo("Camera 2", 160, 120);
+			UsbCamera camera2 = CameraServer.getInstance().startAutomaticCapture(1);
+			CvSink cvSink1 = CameraServer.getInstance().getVideo(camera2);
+			CvSource outputStream1 = CameraServer.getInstance().putVideo("Grayscale2", 160, 120);
 
-			Mat source1 = new Mat();
-			Mat output1 = new Mat();
+			Mat source2 = new Mat();
+			Mat output2 = new Mat();
 
 			while(!Thread.interrupted()) {			
-				long rv1 = cvSink1.grabFrame(source1);
-				
-				if(rv1 != 0){
-					output1.setTo(Scalar.all(0));
-					Imgproc.Canny(source1, output1, 100, 300, 3, false); 
-					outputStream1.putFrame(output1);
-								
+				long rv2 = cvSink1.grabFrame(source2);
+
+				if(rv2 != 0){
+					output2.setTo(new Scalar(1));
+					Imgproc.cvtColor(source2, output2, Imgproc.COLOR_RGB2GRAY);
+					outputStream1.putFrame(output2); 								
 				}
 			}
 		}).start();

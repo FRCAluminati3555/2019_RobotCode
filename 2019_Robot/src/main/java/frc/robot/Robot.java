@@ -12,6 +12,8 @@ import frc.robot.Subsystems.Ball;
 
 public class Robot extends TimedRobot {
 
+  // 10 flip drivers direction joystick 1
+  // 11 toggle line following joystick 1 
   private Camera camera;
   private DriveBase driveTrain;
   private Joystick joystick;

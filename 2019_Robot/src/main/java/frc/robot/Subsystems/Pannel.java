@@ -7,12 +7,14 @@ import edu.wpi.first.wpilibj.Joystick;
 
 
 public class Pannel{
-
+    // POV back for toggle control joystick 0 **
+    // 4 in, 6 out joystick 0
+    // 6 out, 7 in **
     private DoubleSolenoid control;
     private DoubleSolenoid clamp;
     private Joystick controlJoystick;
-    private final Value closed = Value.kForward;
-    private final Value open = Value.kReverse;
+    private final Value open = Value.kForward;
+    private final Value closed = Value.kReverse;
 
     private static Pannel instance = new Pannel();
 

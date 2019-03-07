@@ -9,6 +9,16 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import frc.robot.Subsystems.DriveBase;
 
 public class Climber {
+    // 1 + joystick Manual CAM Control joystick 0
+    // 2 For automatic climb
+    // 3 Manual climber piston down joystick 0 
+    // 5 Manual climber piston up joystick 0
+    // 8 CAM to up position joystick 0
+    // 12 CAM to down position joystick 0
+
+    // 8 Manual climber piston down joystick 1
+    // 9 Manual climber piston up joystick 1
+    
     private Joystick joystick;
     private DoubleSolenoid climbingPiston;
     private TalonSRX m1;
