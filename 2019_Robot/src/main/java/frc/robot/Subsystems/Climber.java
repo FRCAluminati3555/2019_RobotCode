@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Subsystems.DriveBase;
 
 public class Climber {
@@ -26,12 +27,13 @@ public class Climber {
     private int i = 0;
     private int stageD = 0;
     private int stageA = 0;
-    private final Value extended = Value.kForward;
-    private final Value retracted = Value.kReverse;
+    private final Value extended = Value.kReverse;
+    private final Value retracted = Value.kForward;
     private final int CAMDown = 0;
     private final int CAMUp = 0;
     private Joystick joystick2;
-    
+    private double timer = 0;
+    public static boolean climberRunning = false;
    private static Climber instance = new Climber();
 
    public static Climber getInstance() {
@@ -39,7 +41,8 @@ public class Climber {
    } 
    // 450
    // 4
-    public Climber() {
+
+   public Climber() {
         driveTrain = DriveBase.getInstance();
         climbingPiston = new DoubleSolenoid(4, 5);
         m1 = new TalonSRX(45);
@@ -49,7 +52,9 @@ public class Climber {
         m1.enableCurrentLimit(true);
         m1.configPeakCurrentLimit(30);
         m1.configContinuousCurrentLimit(30);
+        
     }
+     
     public void readValue() {
         System.out.println("Potentiometer Value: " + m1.getSelectedSensorPosition());
     }
@@ -63,53 +68,65 @@ public class Climber {
         }
 
         // Move CAM down
-        //if (stageA == 0) {
-            System.out.println("Joystick: " + joystick.getY());
-            System.out.println("Potentiometer Value: " + m1.getSelectedSensorPosition());
-            m1.set(ControlMode.PercentOutput, (joystick.getY() * .3));        
-       // }
-
+        if (stageA == 0) {
+            m1.set(ControlMode.Position, 450);
+        }
         // Drive forward
-        //else if (stageA == 1) {
+        else if (stageA == 1) {
             driveTrain.drive(ControlMode.PercentOutput, 0, joystick2.getY());
             System.out.println("FLM Value:" + driveTrain.getFLMValues());
             System.out.println("FRM Value:" + driveTrain.getFRMValues());
-        //}
+        }
 
         // Move CAM up
-        //else if (stageA == 2) {
-        //    System.out.println("Joystick: " + joystick.getY());
-        //    System.out.println("Potentiometer Value: " + m1.getSelectedSensorPosition());
-        //    m1.set(ControlMode.PercentOutput, (joystick.getY() * .3));                    
-        //}
+        else if (stageA == 2) {
+            System.out.println("Joystick: " + joystick.getY());
+            System.out.println("Potentiometer Value: " + m1.getSelectedSensorPosition());
+            m1.set(ControlMode.PercentOutput, (joystick.getY() * .3));                    
+        }
 
         // Extend piston
-         if (joystick.getRawButton(3)) {
+         if (stageA == 3) {
             climbingPiston.set(extended);           
         }
 
         // Drive forward again
-        /*else if (stageA == 4) {
+        else if (stageA == 4) {
             driveTrain.drive(ControlMode.PercentOutput, 0, joystick.getY());
             System.out.println("FLM Value:" + driveTrain.getFLMValues());
             System.out.println("FRM Value:" + driveTrain.getFRMValues());
-        }*/
+        }
 
         // Retract piston
-        else if (joystick.getRawButton(4)) {
+        else if (stageA == 5) {
             climbingPiston.set(retracted);
         }       
     } 
 
+    public void manualControl(){
+        
+        System.out.println("Joystick: " + joystick.getY());
+        System.out.println("Potentiometer Value: " + m1.getSelectedSensorPosition());
+        m1.set(ControlMode.PercentOutput, (joystick.getY() * .3));  
+
+        driveTrain.drive(ControlMode.PercentOutput, 0, joystick2.getY());
+        System.out.println("FLM Value:" + driveTrain.getFLMValues());
+        System.out.println("FRM Value:" + driveTrain.getFRMValues());
+    
+    }
     public void Desending() {
         if (i == 0){
             i ++;
             driveTrain.resetEncoders();
+            timer = Timer.getFPGATimestamp();
         }
 
         // Extend piston
         if (stageD == 0) {
             climbingPiston.set(extended);
+            if (Timer.getFPGATimestamp() - timer >= 1){
+                stageD += 1;
+            }
         }
 
         // Drive forward
@@ -122,13 +139,19 @@ public class Climber {
         // Lower piston
         else if (stageD == 2) {
             climbingPiston.set(retracted);
+            if (Timer.getFPGATimestamp() - timer >= 1){
+                stageD += 1;
+            }
         }
 
         //Drive off
         else if (stageD == 3) {
             driveTrain.drive(ControlMode.PercentOutput, 0, joystick.getY());
             System.out.println("FLM Value:" + driveTrain.getFLMValues());
-            System.out.println("FRM Value:" + driveTrain.getFRMValues());    
-        }
+            System.out.println("FRM Value:" + driveTrain.getFRMValues());
+            if (driveTrain.getFLMValues() == 0) {
+                climberRunning = false;
+            }   
+        }    
     }
 }

@@ -12,7 +12,6 @@ import frc.robot.Subsystems.Ball;
 
 public class Robot extends TimedRobot {
 
-  // 10 flip drivers direction joystick 1
   // 11 toggle line following joystick 1 
   private Camera camera;
   private DriveBase driveTrain;
@@ -21,6 +20,7 @@ public class Robot extends TimedRobot {
   private Pannel pannel;
   private Climber climber;
   private Ball ball;
+
 
   @Override
   public void robotInit() {
@@ -35,7 +35,9 @@ public class Robot extends TimedRobot {
     compressor.start();
     climber = Climber.getInstance();
     ball = Ball.getInstance();
+    
   }
+  private boolean direction;
 
   @Override
   public void robotPeriodic() {
@@ -54,13 +56,30 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    driveTrain.drive(ControlMode.PercentOutput, joystick.getX(), joystick.getY());
-    pannel.grab();
-    pannel.control();
-    //climber.Acsending();
-    //ball.ballControl();
+    if (Climber.climberRunning != true){
+      if (joystick.getRawButton(10)){
+        if (direction) {
+          direction = false;
+        }
+        else {
+          direction = true;
+        }
+      }
+      if (direction){
+        driveTrain.drive(ControlMode.PercentOutput, joystick.getX(), joystick.getY());
+      }
+      else {
+        driveTrain.drive(ControlMode.PercentOutput, -joystick.getX(), -joystick.getY());
+      }
+      pannel.grab();
+      pannel.control();
+      //climber.Acsending();
+      //ball.ballControl();
+    }
+    else {
+      
+    }
   }
-
   @Override
   public void testPeriodic() {
   }

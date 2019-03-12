@@ -29,10 +29,10 @@ public class Pannel{
     }
 
     public void control(){
-        if (controlJoystick.getPOV() == 0){
+        if (controlJoystick.getRawButton(6)){
             control.set(Value.kForward);
         }
-        else if (controlJoystick.getPOV() == 180){
+        else if (controlJoystick.getRawButton(4)){
             control.set(Value.kReverse);
         }
     }
